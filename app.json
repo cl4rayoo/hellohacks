@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "nibble",
+    "slug": "nibble-meal-prep",
+    "scheme": "nibble",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow nibble to use selected fridge or pantry photos to suggest meals from ingredients you have.",
+          "cameraPermission": "Allow nibble to photograph your fridge and pantry so it can suggest meals from ingredients you have.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ]
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.nibble.mealprep"
+    },
+    "android": {
+      "package": "com.nibble.mealprep"
+    }
+  }
+}
