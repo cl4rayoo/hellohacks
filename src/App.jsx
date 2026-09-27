@@ -57,13 +57,8 @@ const macroFields = [
 ];
 const planMethods = [
   {
-    label: 'Recommend meals',
-    detail: 'Let nibble choose meals that fit your preferences.',
-    icon: '✨',
-  },
-  {
-    label: 'I’ll choose meals',
-    detail: 'Browse meal ideas and pick the ones you want.',
+    label: 'Plan my meals',
+    detail: 'Tell us your mood or type the dish you want to make.',
     icon: '🍽️',
   },
   {
@@ -77,12 +72,22 @@ const moodOptions = [
   { label: 'Fresh & light', detail: 'Bright, crisp, and colorful', emoji: '🥗', color: '#e0efcf' },
   { label: 'Quick & easy', detail: 'Low effort, lots of flavor', emoji: '⚡', color: '#f8edbd' },
   { label: 'Something new', detail: 'A little culinary adventure', emoji: '🌶️', color: '#f6d7cf' },
+  { label: 'High-protein', detail: 'Satisfying, protein-forward plates', emoji: '🥚', color: '#dcecf2' },
+  { label: 'Budget-friendly', detail: 'Flexible meals built on staples', emoji: '🫘', color: '#e8e4f2' },
 ];
 const mealCatalog = [
-  { name: 'Lemony chickpea bowls', detail: 'Herby rice, crunchy cucumber, tahini', emoji: '🥙', time: '25 min', tags: ['Vegetarian', 'High fiber'], moods: ['Fresh & light'], vegetarian: true, vegan: true, glutenFree: true, lactoseFree: true, ingredients: ['chickpeas', 'rice', 'cucumber', 'tahini', 'lemon'], calories: 520, macros: { protein: 18, carbs: 68, fat: 20 }, recipe: ['Cook the rice and let it steam while you prep the toppings.', 'Toss chickpeas with lemon juice, olive oil, salt, and pepper.', 'Fill bowls with rice, cucumber, chickpeas, and tahini. Finish with herbs and lemon.'] },
-  { name: 'Ginger sesame noodles', detail: 'Crisp vegetables, toasted sesame', emoji: '🍜', time: '20 min', tags: ['Quick', 'Vegetarian'], moods: ['Quick & easy', 'Fresh & light'], vegetarian: true, vegan: true, glutenFree: false, lactoseFree: true, ingredients: ['wheat noodles', 'soy sauce', 'sesame', 'cabbage', 'ginger'], calories: 610, macros: { protein: 17, carbs: 82, fat: 24 }, recipe: ['Boil the noodles, then rinse them under cold water.', 'Whisk soy sauce, sesame oil, ginger, and a squeeze of lime.', 'Toss noodles and crisp vegetables with the sauce, then sprinkle with sesame.'] },
-  { name: 'Roasted tomato orzo', detail: 'Sweet tomatoes, basil, whipped ricotta', emoji: '🍅', time: '35 min', tags: ['Comforting', 'Vegetarian'], moods: ['Comforting'], vegetarian: true, vegan: false, glutenFree: false, lactoseFree: false, ingredients: ['orzo wheat pasta', 'tomatoes', 'basil', 'ricotta'], calories: 570, macros: { protein: 21, carbs: 76, fat: 19 }, recipe: ['Roast tomatoes with olive oil, garlic, salt, and pepper until jammy.', 'Cook the orzo until tender, reserving a splash of pasta water.', 'Stir together the orzo, tomatoes, and basil. Spoon ricotta over each bowl.'] },
-  { name: 'Crispy tofu tacos', detail: 'Lime slaw, avocado, smoky salsa', emoji: '🌮', time: '30 min', tags: ['Plant-based', 'High protein'], moods: ['Something new', 'Quick & easy'], vegetarian: true, vegan: true, glutenFree: true, lactoseFree: true, ingredients: ['tofu', 'corn tortillas', 'avocado', 'lime', 'cabbage'], calories: 490, macros: { protein: 24, carbs: 49, fat: 23 }, recipe: ['Press and cube the tofu, then coat it with spices and a little oil.', 'Pan-fry tofu until crisp on every side.', 'Warm tortillas and fill them with tofu, lime slaw, avocado, and salsa.'] },
+  { name: 'Lemony chickpea bowls', detail: 'Herby rice, crunchy cucumber, tahini', emoji: '🥙', time: '25 min', tags: ['Vegetarian', 'High fiber'], moods: ['Fresh & light', 'Budget-friendly'], vegetarian: true, vegan: true, pescatarian: true, glutenFree: true, lactoseFree: true, ingredients: ['chickpeas', 'rice', 'cucumber', 'tahini', 'lemon'], calories: 520, macros: { protein: 18, carbs: 68, fat: 20 }, recipe: ['Cook the rice and let it steam while you prep the toppings.', 'Toss chickpeas with lemon juice, olive oil, salt, and pepper.', 'Fill bowls with rice, cucumber, chickpeas, and tahini. Finish with herbs and lemon.'] },
+  { name: 'Ginger sesame noodles', detail: 'Crisp vegetables, toasted sesame', emoji: '🍜', time: '20 min', tags: ['Quick', 'Vegetarian'], moods: ['Quick & easy', 'Fresh & light'], vegetarian: true, vegan: true, pescatarian: true, glutenFree: false, lactoseFree: true, ingredients: ['wheat noodles', 'soy sauce', 'sesame', 'cabbage', 'ginger'], calories: 610, macros: { protein: 17, carbs: 82, fat: 24 }, recipe: ['Boil the noodles, then rinse them under cold water.', 'Whisk soy sauce, sesame oil, ginger, and a squeeze of lime.', 'Toss noodles and crisp vegetables with the sauce, then sprinkle with sesame.'] },
+  { name: 'Roasted tomato orzo', detail: 'Sweet tomatoes, basil, whipped ricotta', emoji: '🍅', time: '35 min', tags: ['Comforting', 'Vegetarian'], moods: ['Comforting'], vegetarian: true, vegan: false, pescatarian: true, glutenFree: false, lactoseFree: false, ingredients: ['orzo wheat pasta', 'tomatoes', 'basil', 'ricotta'], calories: 570, macros: { protein: 21, carbs: 76, fat: 19 }, recipe: ['Roast tomatoes with olive oil, garlic, salt, and pepper until jammy.', 'Cook the orzo until tender, reserving a splash of pasta water.', 'Stir together the orzo, tomatoes, and basil. Spoon ricotta over each bowl.'] },
+  { name: 'Crispy tofu tacos', detail: 'Lime slaw, avocado, smoky salsa', emoji: '🌮', time: '30 min', tags: ['Plant-based', 'High protein'], moods: ['Something new', 'Quick & easy', 'Budget-friendly'], vegetarian: true, vegan: true, pescatarian: true, glutenFree: true, lactoseFree: true, ingredients: ['tofu', 'corn tortillas', 'avocado', 'lime', 'cabbage'], calories: 490, macros: { protein: 24, carbs: 49, fat: 23 }, recipe: ['Press and cube the tofu, then coat it with spices and a little oil.', 'Pan-fry tofu until crisp on every side.', 'Warm tortillas and fill them with tofu, lime slaw, avocado, and salsa.'] },
+  { name: 'Miso salmon rice bowls', detail: 'Savory salmon, rice, and bright cucumber', emoji: '🍣', time: '30 min', tags: ['Pescatarian', 'High protein'], moods: ['High-protein', 'Something new'], vegetarian: false, vegan: false, pescatarian: true, glutenFree: false, lactoseFree: true, ingredients: ['salmon', 'rice', 'cucumber', 'miso', 'soy sauce'], calories: 640, macros: { protein: 37, carbs: 69, fat: 22 }, recipe: ['Cook the rice and fluff it while you prepare the toppings.', 'Brush salmon with miso and soy sauce, then roast at 200 C until it flakes easily.', 'Serve salmon over rice with sliced cucumber and a little extra miso sauce.'] },
+  { name: 'Lentil tomato stew', detail: 'A hearty one-pot bowl with pantry staples', emoji: '🥘', time: '40 min', tags: ['Vegan', 'Budget-friendly'], moods: ['Comforting', 'Budget-friendly'], vegetarian: true, vegan: true, pescatarian: true, glutenFree: true, lactoseFree: true, ingredients: ['brown lentils', 'canned tomatoes', 'onion', 'carrots', 'vegetable broth'], calories: 420, macros: { protein: 22, carbs: 70, fat: 8 }, recipe: ['Soften diced onion and carrots in olive oil over medium heat.', 'Stir in lentils, tomatoes, broth, and seasoning, then bring to a simmer.', 'Cover and cook until lentils are tender, about 25 to 30 minutes.'] },
+  { name: 'Sheet-pan chicken and sweet potato', detail: 'Roasted chicken, broccoli, and lemon', emoji: '🍗', time: '35 min', tags: ['High protein', 'One pan'], moods: ['Quick & easy', 'High-protein'], vegetarian: false, vegan: false, pescatarian: false, glutenFree: true, lactoseFree: true, ingredients: ['chicken breast', 'sweet potato', 'broccoli', 'olive oil', 'lemon'], calories: 560, macros: { protein: 42, carbs: 48, fat: 19 }, recipe: ['Heat the oven to 220 C and cut sweet potato into small cubes.', 'Toss chicken, sweet potato, and broccoli with olive oil, lemon, salt, and pepper.', 'Roast on one pan until the vegetables are tender and chicken reaches 74 C inside.'] },
+  { name: 'Black bean sweet potato tacos', detail: 'Smoky beans, sweet potato, and lime', emoji: '🌮', time: '30 min', tags: ['Vegan', 'Budget-friendly'], moods: ['Budget-friendly', 'Something new'], vegetarian: true, vegan: true, pescatarian: true, glutenFree: true, lactoseFree: true, ingredients: ['black beans', 'sweet potato', 'corn tortillas', 'avocado', 'lime'], calories: 470, macros: { protein: 16, carbs: 70, fat: 15 }, recipe: ['Roast diced sweet potato with cumin and oil until browned and tender.', 'Warm black beans in a pan with a splash of water and smoked paprika.', 'Fill corn tortillas with beans, sweet potato, avocado, and lime.'] },
+  { name: 'Greek chicken pita', detail: 'Cucumber, tomato, herbs, and cool yogurt', emoji: '🥙', time: '25 min', tags: ['High protein', 'Fresh'], moods: ['Fresh & light', 'High-protein', 'Quick & easy'], vegetarian: false, vegan: false, pescatarian: false, glutenFree: false, lactoseFree: false, ingredients: ['chicken breast', 'pita bread', 'cucumber', 'tomato', 'plain yogurt'], calories: 580, macros: { protein: 40, carbs: 61, fat: 17 }, recipe: ['Season chicken with oregano, lemon, salt, and pepper, then sear until cooked through.', 'Stir chopped herbs and lemon into plain yogurt for a quick sauce.', 'Fill warm pita with sliced chicken, cucumber, tomato, and yogurt sauce.'] },
+  { name: 'Peanut tofu noodle stir-fry', detail: 'Crisp broccoli with a creamy peanut sauce', emoji: '🥜', time: '25 min', tags: ['Vegan', 'High protein'], moods: ['Quick & easy', 'High-protein'], vegetarian: true, vegan: true, pescatarian: true, glutenFree: false, lactoseFree: true, ingredients: ['tofu', 'wheat noodles', 'peanut butter', 'broccoli', 'soy sauce'], calories: 640, macros: { protein: 28, carbs: 77, fat: 25 }, recipe: ['Boil noodles until just tender and drain.', 'Brown tofu in a hot pan, then add broccoli and cook until bright green.', 'Whisk peanut butter with soy sauce and warm water; toss with noodles and tofu.'] },
+  { name: 'Mushroom barley risotto', detail: 'Chewy barley, mushrooms, and parmesan', emoji: '🍄', time: '45 min', tags: ['Comforting', 'Vegetarian'], moods: ['Comforting', 'Budget-friendly'], vegetarian: true, vegan: false, pescatarian: true, glutenFree: false, lactoseFree: false, ingredients: ['pearl barley', 'mushrooms', 'vegetable broth', 'parmesan', 'onion'], calories: 530, macros: { protein: 18, carbs: 78, fat: 15 }, recipe: ['Soften chopped onion and mushrooms in olive oil until golden.', 'Add barley and warm broth a ladle at a time, stirring as it absorbs.', 'Continue until barley is tender, then stir through parmesan and black pepper.'] },
+  { name: 'Tuna white bean salad', detail: 'Lemony beans, tuna, tomato, and parsley', emoji: '🐟', time: '15 min', tags: ['Pescatarian', 'High protein'], moods: ['Fresh & light', 'High-protein', 'Quick & easy'], vegetarian: false, vegan: false, pescatarian: true, glutenFree: true, lactoseFree: true, ingredients: ['tuna', 'white beans', 'tomato', 'lemon', 'parsley'], calories: 440, macros: { protein: 39, carbs: 42, fat: 12 }, recipe: ['Drain tuna and rinse white beans.', 'Mix beans with chopped tomato, parsley, olive oil, and lemon juice.', 'Fold in tuna gently, season to taste, and serve over greens or toast.'] },
 ];
 const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const dayPlaceholders = [
@@ -392,6 +397,10 @@ function MealPreferencesScreen() {
   const [calorieTarget, setCalorieTarget] = useState('');
   const [macroTargets, setMacroTargets] = useState({ protein: '', carbs: '', fat: '' });
   const [planMethod, setPlanMethod] = useState(planMethods[0].label);
+  const [manualMealRequest, setManualMealRequest] = useState('');
+  const [remoteGeneratedMeal, setRemoteGeneratedMeal] = useState(null);
+  const [isGeneratingRecipe, setIsGeneratingRecipe] = useState(false);
+  const [recipeGenerationError, setRecipeGenerationError] = useState('');
   const [profileCreated, setProfileCreated] = useState(false);
   const [plannerPage, setPlannerPage] = useState('methods');
   const [mealDetail, setMealDetail] = useState(null);
@@ -399,11 +408,19 @@ function MealPreferencesScreen() {
   const [calendarReturnPage, setCalendarReturnPage] = useState('recommendations');
   const [selectedMood, setSelectedMood] = useState(moodOptions[1].label);
   const [selectedMeals, setSelectedMeals] = useState([]);
+  const [customMeals, setCustomMeals] = useState([]);
   const [weeklySchedule, setWeeklySchedule] = useState(() => Object.fromEntries(weekDays.map((day) => [day, []])));
   const [selectedMealToMove, setSelectedMealToMove] = useState(null);
   const [draggingMealKey, setDraggingMealKey] = useState(null);
   const [pantryPhotos, setPantryPhotos] = useState([]);
   const [pantryIngredients, setPantryIngredients] = useState([]);
+  const [fridgeScan, setFridgeScan] = useState(null);
+  const [isScanningFridge, setIsScanningFridge] = useState(false);
+  const [fridgeScanError, setFridgeScanError] = useState('');
+  const [generatedPantryMeals, setGeneratedPantryMeals] = useState([]);
+  const [pantryRecipeRequest, setPantryRecipeRequest] = useState('');
+  const [isGeneratingPantryMeals, setIsGeneratingPantryMeals] = useState(false);
+  const [pantryRecipeError, setPantryRecipeError] = useState('');
   const [pantryIngredientDraft, setPantryIngredientDraft] = useState('');
   const [editingPantryIngredient, setEditingPantryIngredient] = useState(null);
   const [editingPantryDraft, setEditingPantryDraft] = useState('');
@@ -455,11 +472,15 @@ function MealPreferencesScreen() {
   function openPlanMethod() {
     setSaved(false);
     if (planMethod === planMethods[0].label) setPlannerPage('mood');
-    else if (planMethod === planMethods[1].label) setPlannerPage('browse');
     else setPlannerPage('pantry');
   }
 
   async function addPantryPhoto(source) {
+    if (pantryPhotos.length >= 4) {
+      Alert.alert('Photo limit reached', 'Scan up to four fridge or pantry photos at a time.');
+      return;
+    }
+
     try {
       if (source === 'camera' && Platform.OS !== 'web') {
         const permission = await ImagePicker.requestCameraPermissionsAsync();
@@ -476,15 +497,111 @@ function MealPreferencesScreen() {
       }
 
       const result = source === 'camera' && Platform.OS !== 'web'
-        ? await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.8 })
-        : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.8 });
+        ? await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 0.8, base64: true })
+        : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.8, base64: true });
       if (!result.canceled && result.assets?.length) {
-        setPantryPhotos((current) => [...current, ...result.assets.map((asset) => asset.uri)]);
+        setPantryPhotos((current) => [
+          ...current,
+          ...result.assets.slice(0, 4 - current.length).map((asset) => ({
+            uri: asset.uri,
+            base64: asset.base64,
+            mimeType: asset.mimeType || 'image/jpeg',
+          })),
+        ]);
+        setFridgeScan(null);
+        setFridgeScanError('');
         setSaved(false);
       }
     } catch (error) {
       Alert.alert('Could not add photo', 'Please try taking or choosing the photo again.');
     }
+  }
+
+  async function scanPantryPhotos() {
+    if (isScanningFridge || pantryPhotos.length === 0) return;
+    if (pantryPhotos.some((photo) => !photo.base64)) {
+      setFridgeScanError('One or more photos could not be read. Remove them and add them again.');
+      return;
+    }
+
+    setIsScanningFridge(true);
+    setFridgeScanError('');
+    try {
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787';
+      const response = await fetch(`${apiUrl}/api/fridge-scan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          images: pantryPhotos.map(({ base64, mimeType }) => ({ base64, mimeType })),
+        }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || 'Could not scan these photos.');
+      setFridgeScan(payload);
+      setGeneratedPantryMeals([]);
+      setPantryRecipeError('');
+      const detectedNames = (payload.detectedIngredients || []).map((item) => item.name);
+      setPantryIngredients((current) => [...new Set([...current, ...detectedNames])]);
+      setSaved(false);
+    } catch (error) {
+      setFridgeScanError(error instanceof TypeError
+        ? 'Could not reach the recipe service. Check that your phone can reach the API URL.'
+        : error.message || 'Could not scan these photos.');
+    } finally {
+      setIsScanningFridge(false);
+    }
+  }
+
+  async function requestPantryRecipes(prompt = '') {
+    if (isGeneratingPantryMeals) return;
+    if (!pantryIngredients.length) {
+      setPantryRecipeError('Scan a fridge photo or add ingredients first.');
+      return;
+    }
+
+    setIsGeneratingPantryMeals(true);
+    setPantryRecipeError('');
+    try {
+      const scannedIngredients = fridgeScan?.detectedIngredients || [];
+      const scannedNames = new Set(scannedIngredients.map((item) => item.name.trim().toLowerCase()));
+      const ingredients = [
+        ...scannedIngredients.map((item) => ({
+          name: item.name,
+          quantityGrams: item.quantityGrams,
+          confidence: item.confidence,
+          source: 'photo',
+        })),
+        ...pantryIngredients
+          .filter((name) => !scannedNames.has(name.trim().toLowerCase()))
+          .map((name) => ({ name, quantityGrams: null, confidence: 'user-added', source: 'manual' })),
+      ];
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787';
+      const response = await fetch(`${apiUrl}/api/pantry-recipes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ingredients, prompt: prompt.trim() }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || 'Could not generate pantry recipes.');
+      const meals = payload.recipes || [];
+      meals.forEach(registerCustomMealIfNeeded);
+      setGeneratedPantryMeals((current) => {
+        const names = new Set(meals.map((meal) => meal.name.toLowerCase()));
+        return [...meals, ...current.filter((meal) => !names.has(meal.name.toLowerCase()))];
+      });
+      setSaved(false);
+    } catch (error) {
+      setPantryRecipeError(error instanceof TypeError
+        ? 'Could not reach the recipe service. Check that your phone can reach the API URL.'
+        : error.message || 'Could not generate pantry recipes.');
+    } finally {
+      setIsGeneratingPantryMeals(false);
+    }
+  }
+
+  function findMealsWithPantryIngredients() {
+    setPlannerPage('pantryMeals');
+    requestPantryRecipes();
   }
 
   function addPantryIngredient() {
@@ -510,6 +627,16 @@ function MealPreferencesScreen() {
     setSaved(false);
   }
 
+  function findMealByName(mealName) {
+    return mealCatalog.find((meal) => meal.name === mealName)
+      || customMeals.find((meal) => meal.name === mealName);
+  }
+
+  function registerCustomMealIfNeeded(meal) {
+    if (!meal || mealCatalog.some((item) => item.name === meal.name) || customMeals.some((item) => item.name === meal.name)) return;
+    setCustomMeals((current) => [...current, meal]);
+  }
+
   function toggleMeal(mealName) {
     setSelectedMeals((current) =>
       current.includes(mealName) ? current.filter((item) => item !== mealName) : [...current, mealName],
@@ -518,6 +645,11 @@ function MealPreferencesScreen() {
   }
 
   function startWeeklyCalendar(mealNames, returnPage) {
+    mealNames.forEach((mealName) => {
+      const meal = findMealByName(mealName) || visibleRecommendedMeals.find((item) => item.name === mealName);
+      if (meal) registerCustomMealIfNeeded(meal);
+    });
+
     const schedule = Object.fromEntries(weekDays.map((day) => [day, []]));
     mealNames.forEach((mealName, index) => {
       schedule[weekDays[index % weekDays.length]].push(mealName);
@@ -558,7 +690,24 @@ function MealPreferencesScreen() {
   }
 
   function leavePlannerPage() {
-    setPlannerPage(plannerPage === 'mealDetail' ? mealDetailReturnPage : plannerPage === 'calendar' ? calendarReturnPage : 'methods');
+    if (plannerPage === 'home') {
+      setPlannerPage('home');
+      setSaved(false);
+      return;
+    }
+    const previousPage = plannerPage === 'mealDetail'
+      ? mealDetailReturnPage
+      : plannerPage === 'calendar'
+        ? calendarReturnPage
+        : plannerPage === 'recommendations'
+          ? 'mood'
+          : 'methods';
+    setPlannerPage(previousPage);
+    setSaved(false);
+  }
+
+  function openHomeScreen() {
+    setPlannerPage('home');
     setSaved(false);
   }
 
@@ -570,6 +719,7 @@ function MealPreferencesScreen() {
 
   function addMealFromDetail() {
     if (!mealDetail) return;
+    registerCustomMealIfNeeded(mealDetail);
     setSelectedMeals((current) => current.includes(mealDetail.name) ? current : [...current, mealDetail.name]);
     setSaved(false);
     setPlannerPage(mealDetailReturnPage);
@@ -579,6 +729,7 @@ function MealPreferencesScreen() {
     Keyboard.dismiss();
     setSaved(false);
     setProfileCreated(true);
+    setPlannerPage('home');
   }
 
   const goalDetails = selectedGoals.map((goal) => {
@@ -611,20 +762,170 @@ function MealPreferencesScreen() {
   const mealsForProfile = mealCatalog.filter((meal) => {
     if (diet === 'Vegan' && !meal.vegan) return false;
     if (diet === 'Vegetarian' && !meal.vegetarian) return false;
-    if (diet === 'Pescatarian' && !meal.vegetarian) return false;
+    if (diet === 'Pescatarian' && !meal.pescatarian) return false;
     if (selectedDietaryNeeds.includes('Gluten-free') && !meal.glutenFree) return false;
     if (selectedDietaryNeeds.includes('Lactose intolerant') && !meal.lactoseFree) return false;
     const avoidTerms = [...allergies, ...dislikes].map((item) => item.trim().toLowerCase()).filter(Boolean);
     return !avoidTerms.some((term) => meal.ingredients.some((ingredient) => ingredient.includes(term)));
   });
+  function titleCase(value) {
+    return value
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  function generateMealFromPrompt(prompt) {
+    const rawPrompt = prompt.trim();
+    if (!rawPrompt) return null;
+
+    const lowerPrompt = rawPrompt.toLowerCase();
+    const matchingMeal = mealCatalog.find((meal) => {
+      const searchable = `${meal.name} ${meal.detail} ${meal.tags.join(' ')} ${meal.ingredients.join(' ')}`.toLowerCase();
+      return searchable.includes(lowerPrompt) || lowerPrompt.includes(meal.name.toLowerCase());
+    });
+    if (matchingMeal) return matchingMeal;
+
+    const promptText = rawPrompt.toLowerCase();
+    const keywordMap = [
+      {
+        keywords: ['taco', 'tacos', 'burrito', 'quesadilla'],
+        name: 'Build-your-own taco bowl',
+        emoji: '🌮',
+        detail: 'A colorful, crunchy, satisfying bowl with a little spice.',
+        time: '25 min',
+        ingredients: ['corn tortillas', 'black beans', 'cabbage', 'lime', 'avocado'],
+        recipe: ['Warm the tortillas and toast the beans with chili and cumin.', 'Pile in crunchy cabbage, avocado, and a bright lime dressing.', 'Top with salsa and serve in bowls or wraps.'],
+      },
+      {
+        keywords: ['pasta', 'spaghetti', 'linguine', 'lasagna'],
+        name: 'Garlic herb pasta',
+        emoji: '🍝',
+        detail: 'Comforting pasta with garlic, greens, and a silky finish.',
+        time: '30 min',
+        ingredients: ['pasta', 'garlic', 'spinach', 'tomatoes', 'parmesan'],
+        recipe: ['Boil the pasta until tender, then reserve a little of the cooking water.', 'Sauté garlic and tomatoes, then toss in spinach and a splash of pasta water.', 'Fold in the pasta and finish with parmesan and herbs.'],
+      },
+      {
+        keywords: ['salad', 'bowl', 'grain'],
+        name: 'Fresh grain salad',
+        emoji: '🥗',
+        detail: 'A crisp, balanced bowl you can prep in a few minutes.',
+        time: '20 min',
+        ingredients: ['quinoa', 'spinach', 'cucumber', 'tomatoes', 'lemon'],
+        recipe: ['Cook the grains until fluffy and let them cool slightly.', 'Toss with greens, cucumber, and tomatoes.', 'Finish with lemon juice, olive oil, salt, and pepper.'],
+      },
+      {
+        keywords: ['noodle', 'ramen', 'udon'],
+        name: 'Sesame ginger noodle stir-fry',
+        emoji: '🍜',
+        detail: 'Warm noodles with a savory-sweet glaze and fresh crunch.',
+        time: '22 min',
+        ingredients: ['wheat noodles', 'soy sauce', 'ginger', 'cabbage', 'sesame'],
+        recipe: ['Boil the noodles and rinse under cool water.', 'Whisk soy sauce, sesame oil, and ginger for the sauce.', 'Stir-fry the vegetables, add noodles and sauce, then toss until glossy.'],
+      },
+      {
+        keywords: ['chicken', 'fish', 'salmon', 'shrimp'],
+        name: 'Protein rice bowl',
+        emoji: '🍱',
+        detail: 'A balanced bowl with a savory protein and easy veggies.',
+        time: '28 min',
+        ingredients: ['rice', 'protein', 'broccoli', 'carrots', 'soy sauce'],
+        recipe: ['Cook the rice and prep the vegetables until just tender.', 'Quickly sear the protein with garlic and a little soy sauce.', 'Serve over rice with vegetables and extra sauce.'],
+      },
+      {
+        keywords: ['soup', 'stew', 'curry'],
+        name: 'Cozy veggie soup',
+        emoji: '🍲',
+        detail: 'A warm, simple pot that feels comforting and nourishing.',
+        time: '35 min',
+        ingredients: ['vegetables', 'broth', 'onion', 'garlic', 'beans'],
+        recipe: ['Sauté onion and garlic until soft, then add chopped vegetables.', 'Pour in broth and simmer until the vegetables are tender.', 'Stir in beans and finish with herbs and a splash of lemon.'],
+      },
+    ];
+
+    const chosen = keywordMap.find(({ keywords }) => keywords.some((keyword) => promptText.includes(keyword))) || {
+      keywords: [],
+      name: titleCase(rawPrompt),
+      emoji: '🍽️',
+      detail: 'A custom meal idea built around your request.',
+      time: '30 min',
+      ingredients: ['fresh vegetables', 'your favorite protein', 'aromatic herbs', 'base grain'],
+      recipe: ['Prep the vegetables and any protein you want to use.', 'Cook the base and toss everything together with a simple seasoning.', 'Adjust the flavor with herbs, citrus, or sauce to taste.'],
+    };
+
+    return {
+      name: chosen.name,
+      detail: chosen.detail,
+      emoji: chosen.emoji,
+      time: chosen.time,
+      tags: ['Custom', 'Made for you'],
+      moods: ['Quick & easy', 'Comforting'],
+      vegetarian: true,
+      vegan: true,
+      glutenFree: true,
+      lactoseFree: true,
+      ingredients: chosen.ingredients,
+      calories: 540,
+      macros: { protein: 24, carbs: 58, fat: 18 },
+      recipe: chosen.recipe,
+    };
+  }
+
+  async function generateRecipeWithNutrition() {
+    const prompt = manualMealRequest.trim();
+    if (!prompt || isGeneratingRecipe) return;
+
+    setIsGeneratingRecipe(true);
+    setRecipeGenerationError('');
+    try {
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787';
+      const response = await fetch(`${apiUrl}/api/recipe-nutrition`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || 'Could not generate this recipe.');
+      setRemoteGeneratedMeal(payload);
+      registerCustomMealIfNeeded(payload);
+      setPlannerPage('recommendations');
+    } catch (error) {
+      setRecipeGenerationError(error instanceof TypeError
+        ? 'The recipe service is not reachable. Start the app with npm run web and try again.'
+        : error.message || 'Could not generate this recipe.');
+    } finally {
+      setIsGeneratingRecipe(false);
+    }
+  }
+
   const recommendedMeals = mealsForProfile.filter((meal) => meal.moods.includes(selectedMood));
+  const normalizedManualRequest = manualMealRequest.trim().toLowerCase();
+  const customMealSuggestions = normalizedManualRequest
+    ? (() => {
+        if (remoteGeneratedMeal) return [remoteGeneratedMeal];
+        const generatedMeal = generateMealFromPrompt(manualMealRequest);
+        const matches = mealsForProfile.filter((meal) => {
+          const searchable = `${meal.name} ${meal.detail} ${meal.tags.join(' ')} ${meal.ingredients.join(' ')}`.toLowerCase();
+          return searchable.includes(normalizedManualRequest) || normalizedManualRequest.includes(meal.name.toLowerCase());
+        });
+        return matches.length ? matches : [generatedMeal].filter(Boolean);
+      })()
+    : [];
+  const visibleRecommendedMeals = normalizedManualRequest ? customMealSuggestions : recommendedMeals;
   const pantryMealIdeas = [...mealsForProfile]
     .map((meal) => ({
       meal,
       matches: pantryIngredients.filter((ingredient) => meal.ingredients.some((item) => item.includes(ingredient.toLowerCase()) || ingredient.toLowerCase().includes(item))).length,
     }))
+    .filter(({ matches }) => matches > 0)
     .sort((first, second) => second.matches - first.matches)
     .map(({ meal }) => meal);
+  const pantryMealOptions = [
+    ...generatedPantryMeals,
+    ...pantryMealIdeas.filter((meal) => !generatedPantryMeals.some((generated) => generated.name.toLowerCase() === meal.name.toLowerCase())),
+  ];
 
   if (profileCreated) {
     return (
@@ -632,26 +933,31 @@ function MealPreferencesScreen() {
         <StatusBar style="light" />
         <View style={styles.plannerScreen}>
           <View style={styles.plannerTopbar}>
-            <View style={styles.plannerBrand}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Go to home"
+              onPress={openHomeScreen}
+              style={styles.plannerBrand}
+            >
               <View style={styles.plannerBrandMark}>
                 <Ionicons name="restaurant-outline" size={18} color="#24443a" />
               </View>
-                <Text style={styles.plannerBrandText}>nibble<Text style={styles.plannerBrandPeriod}>.</Text></Text>
-            </View>
-            {plannerPage === 'methods' ? (
+              <Text style={styles.plannerBrandText}>nibble<Text style={styles.plannerBrandPeriod}>.</Text></Text>
+            </Pressable>
+            {plannerPage === 'home' ? (
               <View style={styles.profileReadyBadge}>
                 <Ionicons name="checkmark-circle" size={15} color="#a8da83" />
-                <Text style={styles.profileReadyText}>PROFILE READY</Text>
+                <Text style={styles.profileReadyText}>HOME</Text>
               </View>
             ) : (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Back to plan options"
+                accessibilityLabel={plannerPage === 'recommendations' ? 'Back to mood choices' : 'Back to plan options'}
                 onPress={leavePlannerPage}
                 style={({ pressed }) => [styles.plannerBackButton, pressed && styles.pressed]}
               >
                 <Ionicons name="arrow-back" size={16} color="#e8f2df" />
-                <Text style={styles.plannerBackText}>{plannerPage === 'mealDetail' ? 'Meal ideas' : plannerPage === 'calendar' ? 'Meal ideas' : 'Plan options'}</Text>
+                <Text style={styles.plannerBackText}>{plannerPage === 'recommendations' ? 'Your mood' : plannerPage === 'mealDetail' ? 'Meal ideas' : plannerPage === 'calendar' ? 'Meal ideas' : 'Plan options'}</Text>
               </Pressable>
             )}
           </View>
@@ -660,6 +966,42 @@ function MealPreferencesScreen() {
             contentContainerStyle={[styles.plannerContent, { paddingBottom: 28 + insets.bottom }]}
             showsVerticalScrollIndicator={false}
           >
+            {plannerPage === 'home' && (
+              <>
+                <View style={styles.plannerWelcome}>
+                  <Text style={styles.plannerEyebrow}>YOUR KITCHEN</Text>
+                  <Text style={styles.plannerTitle}>{name.trim() ? `Welcome home, ${name.trim()}.` : 'Welcome home.'}</Text>
+                  <Text style={styles.plannerSubtitle}>Jump back into your weekly plan, kitchen ideas, or meal prep flow.</Text>
+                </View>
+
+                <View style={styles.homeTiles}>
+                  <Pressable accessibilityRole="button" onPress={() => setPlannerPage('methods')} style={({ pressed }) => [styles.homeTile, pressed && styles.pressed]}>
+                    <View style={[styles.homeTileIcon, styles.homeTileIconGreen]}><Ionicons name="calendar-outline" size={24} color="#24443a" /></View>
+                    <Text style={styles.homeTileTitle}>Meal plan</Text>
+                    <Text style={styles.homeTileText}>Build your week and choose meals.</Text>
+                  </Pressable>
+
+                  <Pressable accessibilityRole="button" onPress={() => setPlannerPage('pantry')} style={({ pressed }) => [styles.homeTile, pressed && styles.pressed]}>
+                    <View style={[styles.homeTileIcon, styles.homeTileIconBlue]}><Ionicons name="basket-outline" size={24} color="#1d4c68" /></View>
+                    <Text style={styles.homeTileTitle}>Kitchen</Text>
+                    <Text style={styles.homeTileText}>Add ingredients and fridge photos.</Text>
+                  </Pressable>
+
+                  <Pressable accessibilityRole="button" onPress={() => setPlannerPage('pantryMeals')} style={({ pressed }) => [styles.homeTile, pressed && styles.pressed]}>
+                    <View style={[styles.homeTileIcon, styles.homeTileIconOrange]}><Ionicons name="sparkles-outline" size={24} color="#7f3d28" /></View>
+                    <Text style={styles.homeTileTitle}>Ideas</Text>
+                    <Text style={styles.homeTileText}>See meals based on what you have.</Text>
+                  </Pressable>
+
+                  <Pressable accessibilityRole="button" onPress={() => setPlannerPage('calendar')} style={({ pressed }) => [styles.homeTile, pressed && styles.pressed]}>
+                    <View style={[styles.homeTileIcon, styles.homeTileIconPurple]}><Ionicons name="time-outline" size={24} color="#48408d" /></View>
+                    <Text style={styles.homeTileTitle}>Week</Text>
+                    <Text style={styles.homeTileText}>Review and move meals across days.</Text>
+                  </Pressable>
+                </View>
+              </>
+            )}
+
             {plannerPage === 'methods' && (
               <>
                 <View style={styles.plannerWelcome}>
@@ -719,7 +1061,43 @@ function MealPreferencesScreen() {
                 <View style={styles.destinationIntro}>
                   <Text style={styles.plannerEyebrow}>A LITTLE INSPIRATION</Text>
                   <Text style={styles.destinationTitle}>What are you feeling?</Text>
-                  <Text style={styles.destinationSubtitle}>Pick the kind of food that sounds good right now.</Text>
+                  <Text style={styles.destinationSubtitle}>Pick a mood, or type a dish you want to make.</Text>
+                </View>
+                <View style={styles.planPromptCard}>
+                  <Text style={styles.planPromptLabel}>Or type a meal idea</Text>
+                  <TextInput
+                    accessibilityLabel="Meal idea"
+                    autoCapitalize="words"
+                    onChangeText={(value) => {
+                      setManualMealRequest(value);
+                      setRemoteGeneratedMeal(null);
+                      setRecipeGenerationError('');
+                    }}
+                    placeholder="e.g. veggie tacos, lemon pasta, salmon rice bowl"
+                    placeholderTextColor="#8aa1ad"
+                    style={styles.planPromptInput}
+                    value={manualMealRequest}
+                  />
+                  <View style={styles.planPromptActions}>
+                    <Pressable
+                      accessibilityRole="button"
+                      disabled={!manualMealRequest.trim() || isGeneratingRecipe}
+                      onPress={generateRecipeWithNutrition}
+                      style={({ pressed }) => [styles.planPromptGenerateButton, (!manualMealRequest.trim() || isGeneratingRecipe || pressed) && styles.pressed]}
+                    >
+                      <Text style={styles.planPromptGenerateText}>{isGeneratingRecipe ? 'Checking nutrition...' : 'Generate recipe'}</Text>
+                    </Pressable>
+                    {manualMealRequest.trim() && (
+                      <Pressable
+                        accessibilityRole="button"
+                        onPress={() => setManualMealRequest('')}
+                        style={styles.planPromptClearButton}
+                      >
+                        <Text style={styles.planPromptClearText}>Clear</Text>
+                      </Pressable>
+                    )}
+                  </View>
+                  {!!recipeGenerationError && <Text style={styles.recipeGenerationError}>{recipeGenerationError}</Text>}
                 </View>
                 <View style={styles.moodGrid}>
                   {moodOptions.map(({ label, detail, emoji, color }) => {
@@ -749,11 +1127,11 @@ function MealPreferencesScreen() {
               <>
                 <View style={styles.destinationIntro}>
                   <Text style={styles.plannerEyebrow}>MADE FOR YOUR MOOD</Text>
-                  <Text style={styles.destinationTitle}>{selectedMood} meal ideas</Text>
-                  <Text style={styles.destinationSubtitle}>A few ideas that fit your preferences and today’s mood.</Text>
+                  <Text style={styles.destinationTitle}>{normalizedManualRequest ? `Ideas for “${manualMealRequest.trim()}”` : `${selectedMood} meal ideas`}</Text>
+                  <Text style={styles.destinationSubtitle}>{normalizedManualRequest ? 'We matched a few dishes to your idea and your saved preferences.' : 'A few ideas that fit your preferences and today’s mood.'}</Text>
                 </View>
                 <View style={styles.mealList}>
-                  {recommendedMeals.map((meal) => (
+                  {visibleRecommendedMeals.map((meal) => (
                     <Pressable key={meal.name} accessibilityRole="button" accessibilityLabel={`View ${meal.name}`} onPress={() => openMealDetail(meal, 'recommendations')} style={({ pressed }) => [styles.mealCard, pressed && styles.pressed]}>
                       <View style={styles.mealEmojiWrap}><Text style={styles.mealEmoji}>{meal.emoji}</Text></View>
                       <View style={styles.mealCardCopy}>
@@ -764,8 +1142,8 @@ function MealPreferencesScreen() {
                       <Ionicons name="chevron-forward" size={18} color="#f26b4f" />
                     </Pressable>
                   ))}
-                  {recommendedMeals.length === 0 && (
-                    <Text style={styles.emptyMeals}>No meals match that mood and your saved food restrictions. Try another mood.</Text>
+                  {visibleRecommendedMeals.length === 0 && (
+                    <Text style={styles.emptyMeals}>{normalizedManualRequest ? 'No meals match that idea yet. Try a different dish or keep browsing by mood.' : 'No meals match that mood and your saved food restrictions. Try another mood.'}</Text>
                   )}
                 </View>
               </>
@@ -816,24 +1194,43 @@ function MealPreferencesScreen() {
                   <Text style={styles.mealDetailSubtitle}>{mealDetail.detail}</Text>
                   <View style={styles.mealDetailMetaRow}>
                     <View style={styles.mealDetailMeta}><Ionicons name="time-outline" size={16} color="#d8523c" /><Text style={styles.mealDetailMetaText}>{mealDetail.time}</Text></View>
-                    <View style={styles.mealDetailMeta}><Ionicons name="flame-outline" size={16} color="#d8523c" /><Text style={styles.mealDetailMetaText}>{mealDetail.calories} kcal</Text></View>
+                    <View style={styles.mealDetailMeta}><Ionicons name="flame-outline" size={16} color="#d8523c" /><Text style={styles.mealDetailMetaText}>{mealDetail.calories} kcal / serving</Text></View>
                   </View>
                 </View>
 
                 <View style={styles.nutritionCard}>
                   <View style={styles.detailSectionHeading}>
                     <Text style={styles.detailSectionTitle}>Nutrition per serving</Text>
-                    <Text style={styles.detailSectionCaption}>estimated</Text>
+                    <Text style={styles.detailSectionCaption}>{mealDetail.servings ? `Estimated · assumes ${mealDetail.servings} servings` : 'Estimated'}</Text>
                   </View>
                   <View style={styles.macroGrid}>
                     <View style={[styles.macroStat, styles.macroStatProtein]}><Text style={styles.macroStatValue}>{mealDetail.macros.protein}g</Text><Text style={styles.macroStatLabel}>Protein</Text></View>
                     <View style={[styles.macroStat, styles.macroStatCarbs]}><Text style={styles.macroStatValue}>{mealDetail.macros.carbs}g</Text><Text style={styles.macroStatLabel}>Carbs</Text></View>
                     <View style={[styles.macroStat, styles.macroStatFat]}><Text style={styles.macroStatValue}>{mealDetail.macros.fat}g</Text><Text style={styles.macroStatLabel}>Fat</Text></View>
                   </View>
+                  {!!mealDetail.nutritionWarning && <Text style={styles.nutritionWarning}>{mealDetail.nutritionWarning}</Text>}
                 </View>
 
                 <View style={styles.recipeSection}>
                   <Text style={styles.detailSectionTitle}>What you’ll need</Text>
+                  {!!mealDetail.fridgeIngredientsUsed?.length && (
+                    <View style={styles.recipeIngredientSource}>
+                      <Text style={styles.recipeIngredientSourceTitle}>Seen in your fridge photo</Text>
+                      <Text style={styles.recipeIngredientSourceText}>{mealDetail.fridgeIngredientsUsed.join(', ')}</Text>
+                    </View>
+                  )}
+                  {!!mealDetail.manualIngredientsUsed?.length && (
+                    <View style={styles.recipeIngredientSource}>
+                      <Text style={styles.recipeIngredientSourceTitle}>From ingredients you added</Text>
+                      <Text style={styles.recipeIngredientSourceText}>{mealDetail.manualIngredientsUsed.join(', ')}</Text>
+                    </View>
+                  )}
+                  {!!mealDetail.extraIngredients?.length && (
+                    <View style={[styles.recipeIngredientSource, styles.recipeExtraIngredients]}>
+                      <Text style={styles.recipeIngredientSourceTitle}>You’ll need to get</Text>
+                      <Text style={styles.recipeIngredientSourceText}>{mealDetail.extraIngredients.join(', ')}</Text>
+                    </View>
+                  )}
                   <View style={styles.ingredientList}>
                     {mealDetail.ingredients.map((ingredient) => <View key={ingredient} style={styles.ingredientRow}><Ionicons name="checkmark-circle" size={16} color="#48a868" /><Text style={styles.ingredientText}>{ingredient}</Text></View>)}
                   </View>
@@ -867,6 +1264,17 @@ function MealPreferencesScreen() {
                 <View style={styles.weekCalendar}>
                   {weekDays.map((day, index) => {
                     const meals = weeklySchedule[day] || [];
+                    const dayNutrition = meals.reduce((totals, mealName) => {
+                      const meal = findMealByName(mealName);
+                      if (!meal) return totals;
+                      return {
+                        calories: totals.calories + (meal.calories || 0),
+                        protein: totals.protein + (meal.macros?.protein || 0),
+                        carbs: totals.carbs + (meal.macros?.carbs || 0),
+                        fat: totals.fat + (meal.macros?.fat || 0),
+                      };
+                    }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+
                     return (
                       <View
                         testID={`calendar-day-${day.toLowerCase()}`}
@@ -898,9 +1306,21 @@ function MealPreferencesScreen() {
                             <Text style={styles.calendarDayMealCount}>{meals.length ? `${meals.length} planned` : 'Open'}</Text>
                           )}
                         </View>
+
+                        {meals.length > 0 && (
+                          <View style={styles.calendarDayNutrition}>
+                            <Text style={styles.calendarDayNutritionValue}>{dayNutrition.calories} kcal</Text>
+                            <View style={styles.calendarDayNutritionBreakdown}>
+                              <Text style={styles.calendarDayNutritionMicro}>P {dayNutrition.protein}g</Text>
+                              <Text style={styles.calendarDayNutritionMicro}>C {dayNutrition.carbs}g</Text>
+                              <Text style={styles.calendarDayNutritionMicro}>F {dayNutrition.fat}g</Text>
+                            </View>
+                          </View>
+                        )}
+
                         <View style={[styles.calendarDropZone, meals.length === 0 && styles.calendarDropZoneEmpty]}>
                           {meals.length > 0 ? meals.map((mealName) => {
-                            const meal = mealCatalog.find((item) => item.name === mealName);
+                            const meal = findMealByName(mealName);
                             if (!meal) return null;
                             return (
                               <View key={mealName} style={styles.calendarScheduledRow}>
@@ -937,7 +1357,7 @@ function MealPreferencesScreen() {
                 <View style={styles.destinationIntro}>
                   <Text style={styles.plannerEyebrow}>COOK WITH WHAT YOU HAVE</Text>
                   <Text style={styles.destinationTitle}>Show us your kitchen</Text>
-                  <Text style={styles.destinationSubtitle}>Take a photo of your fridge and pantry. We’ll look for ingredients to build meals around.</Text>
+                  <Text style={styles.destinationSubtitle}>Gemini identifies visible foods in your fridge photos; CalorieNinjas estimates their nutrition.</Text>
                 </View>
                 <View style={styles.fridgeScene}>
                   <View style={styles.tocaFridge} accessibilityElementsHidden>
@@ -1047,14 +1467,16 @@ function MealPreferencesScreen() {
                 </View>
                 {pantryPhotos.length > 0 && (
                   <View style={styles.photoGrid}>
-                    {pantryPhotos.map((uri, index) => (
-                      <View key={`${uri}-${index}`} style={styles.photoThumbWrap}>
-                        <Image source={{ uri }} style={styles.photoThumb} />
+                    {pantryPhotos.map((photo, index) => (
+                      <View key={`${photo.uri}-${index}`} style={styles.photoThumbWrap}>
+                        <Image source={{ uri: photo.uri }} style={styles.photoThumb} />
                         <Pressable
                           accessibilityRole="button"
                           accessibilityLabel={`Remove kitchen photo ${index + 1}`}
                           onPress={() => {
                             setPantryPhotos((current) => current.filter((_, itemIndex) => itemIndex !== index));
+                            setFridgeScan(null);
+                            setFridgeScanError('');
                             setSaved(false);
                           }}
                           style={styles.photoRemove}
@@ -1063,6 +1485,70 @@ function MealPreferencesScreen() {
                         </Pressable>
                       </View>
                     ))}
+                  </View>
+                )}
+                {pantryPhotos.length > 0 && (
+                  <View style={styles.fridgeScanPanel}>
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel="Scan fridge photos for ingredients and nutrition"
+                      accessibilityState={{ disabled: isScanningFridge }}
+                      disabled={isScanningFridge}
+                      onPress={scanPantryPhotos}
+                      style={({ pressed }) => [styles.fridgeScanButton, pressed && styles.pressed, isScanningFridge && styles.plannerActionDisabled]}
+                    >
+                      <Ionicons name={isScanningFridge ? 'hourglass-outline' : 'scan-outline'} size={18} color="#fff" />
+                      <Text style={styles.fridgeScanButtonText}>{isScanningFridge ? 'Scanning ingredients...' : 'Scan ingredients & nutrition'}</Text>
+                    </Pressable>
+                    {!!fridgeScanError && <Text style={styles.recipeGenerationError}>{fridgeScanError}</Text>}
+                    {fridgeScan && (
+                      <View style={styles.fridgeScanResults}>
+                        <Text style={styles.fridgeScanTitle}>
+                          {fridgeScan.detectedIngredients.length
+                            ? `${fridgeScan.detectedIngredients.length} visible ingredients`
+                            : 'No clear ingredients identified'}
+                        </Text>
+                        <Text style={styles.fridgeScanNote}>{fridgeScan.note}</Text>
+                        {fridgeScan.detectedIngredients.length > 0 && (
+                          <>
+                            <View style={styles.fridgeScanTotals}>
+                              <Text style={styles.fridgeScanCalories}>{Math.round(fridgeScan.nutritionTotal.calories)} kcal total</Text>
+                              <Text style={styles.fridgeScanMacros}>
+                                P {Math.round(fridgeScan.nutritionTotal.protein)}g  ·  C {Math.round(fridgeScan.nutritionTotal.carbs)}g  ·  F {Math.round(fridgeScan.nutritionTotal.fat)}g
+                              </Text>
+                            </View>
+                            <Text style={styles.fridgeScanSubheading}>Identified foods</Text>
+                            <View style={styles.fridgeScannedList}>
+                              {fridgeScan.detectedIngredients.map((ingredient) => (
+                                <View key={ingredient.name} style={styles.fridgeScannedRow}>
+                                  <Text style={styles.fridgeScannedName}>{ingredient.name}</Text>
+                                  <Text style={styles.fridgeScannedMeta}>
+                                    ~{Math.round(ingredient.quantityGrams)} g · {ingredient.confidence} confidence
+                                  </Text>
+                                  <Text style={styles.fridgeScannedEvidence}>{ingredient.evidence}</Text>
+                                </View>
+                              ))}
+                            </View>
+                            {fridgeScan.nutritionItems.length > 0 && (
+                              <>
+                                <Text style={styles.fridgeScanSubheading}>Nutrition by ingredient</Text>
+                                <View style={styles.fridgeScannedList}>
+                                  {fridgeScan.nutritionItems.map((item, index) => (
+                                    <View key={`${item.name}-${index}`} style={styles.fridgeNutritionRow}>
+                                      <Text style={styles.fridgeScannedName}>{item.name} · {Math.round(item.calories)} kcal</Text>
+                                      <Text style={styles.fridgeScannedMeta}>
+                                        P {Math.round(item.protein)}g  ·  C {Math.round(item.carbs)}g  ·  F {Math.round(item.fat)}g
+                                      </Text>
+                                    </View>
+                                  ))}
+                                </View>
+                              </>
+                            )}
+                          </>
+                        )}
+                        {!!fridgeScan.nutritionWarning && <Text style={styles.nutritionWarning}>{fridgeScan.nutritionWarning}</Text>}
+                      </View>
+                    )}
                   </View>
                 )}
               </>
@@ -1074,25 +1560,66 @@ function MealPreferencesScreen() {
                   <Text style={styles.plannerEyebrow}>FROM YOUR KITCHEN</Text>
                   <Text style={styles.destinationTitle}>Here’s what you could make</Text>
                   <Text style={styles.destinationSubtitle}>
-                    {pantryIngredients.length ? `We found ideas that use ${pantryIngredients.join(', ').toLowerCase()}.` : 'A few flexible ideas to help you use what you have.'}
+                    {pantryIngredients.length ? `Available ingredients: ${pantryIngredients.join(', ').toLowerCase()}.` : 'Add ingredients in your kitchen to get recipe ideas.'}
                   </Text>
                 </View>
                 <View style={styles.pantryIdeaSummary}>
                   <Ionicons name="sparkles-outline" size={19} color="#d8523c" />
-                  <Text style={styles.pantryIdeaSummaryText}>{pantryIngredients.length} ingredients added · {pantryMealIdeas.length} meal ideas</Text>
+                  <Text style={styles.pantryIdeaSummaryText}>{pantryIngredients.length} ingredients added · {pantryMealOptions.length} meal ideas</Text>
+                </View>
+                <View style={styles.pantryRecipeTools}>
+                  <Pressable
+                    accessibilityRole="button"
+                    disabled={isGeneratingPantryMeals || pantryIngredients.length === 0}
+                    onPress={() => requestPantryRecipes()}
+                    style={({ pressed }) => [styles.pantryGenerateButton, pressed && styles.pressed, (isGeneratingPantryMeals || pantryIngredients.length === 0) && styles.plannerActionDisabled]}
+                  >
+                    <Ionicons name={isGeneratingPantryMeals ? 'hourglass-outline' : 'sparkles-outline'} size={17} color="#fff" />
+                    <Text style={styles.pantryGenerateButtonText}>{isGeneratingPantryMeals ? 'Making recipe ideas...' : 'Generate 3 more ideas'}</Text>
+                  </Pressable>
+                  <View style={styles.pantryCustomRecipe}>
+                    <Text style={styles.pantryRecipeInputLabel}>Have a dish in mind?</Text>
+                    <View style={styles.pantryRecipeInputRow}>
+                      <TextInput
+                        accessibilityLabel="Recipe you want to make with pantry ingredients"
+                        onChangeText={setPantryRecipeRequest}
+                        onSubmitEditing={() => requestPantryRecipes(pantryRecipeRequest)}
+                        placeholder="e.g. vegetable fried rice"
+                        placeholderTextColor="#91a0a4"
+                        returnKeyType="go"
+                        style={styles.pantryRecipeInput}
+                        value={pantryRecipeRequest}
+                      />
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel="Make my recipe idea"
+                        disabled={!pantryRecipeRequest.trim() || isGeneratingPantryMeals}
+                        onPress={() => requestPantryRecipes(pantryRecipeRequest)}
+                        style={({ pressed }) => [styles.pantryRecipeSubmit, pressed && styles.pressed, (!pantryRecipeRequest.trim() || isGeneratingPantryMeals) && styles.plannerActionDisabled]}
+                      >
+                        <Ionicons name="arrow-forward" size={17} color="#fff" />
+                      </Pressable>
+                    </View>
+                  </View>
+                  {!!pantryRecipeError && <Text style={styles.recipeGenerationError}>{pantryRecipeError}</Text>}
                 </View>
                 <View style={styles.mealList}>
-                  {pantryMealIdeas.map((meal) => (
-                    <Pressable key={meal.name} accessibilityRole="button" accessibilityLabel={`View ${meal.name}`} onPress={() => openMealDetail(meal, 'pantryMeals')} style={({ pressed }) => [styles.mealCard, pressed && styles.pressed]}>
-                      <View style={styles.mealEmojiWrap}><Text style={styles.mealEmoji}>{meal.emoji}</Text></View>
-                      <View style={styles.mealCardCopy}>
-                        <Text style={styles.mealTitle}>{meal.name}</Text>
-                        <Text style={styles.mealDetail}>{meal.detail}</Text>
-                        <Text style={styles.mealMeta}>{meal.time}  ·  {meal.tags.join('  ·  ')}</Text>
-                      </View>
-                      <Ionicons name="chevron-forward" size={18} color="#f26b4f" />
-                    </Pressable>
+                  {generatedPantryMeals.length > 0 && <Text style={styles.pantryRecipeListHeading}>Made with your ingredients</Text>}
+                  {pantryMealOptions.map((meal, index) => (
+                    <React.Fragment key={meal.name}>
+                      {index === generatedPantryMeals.length && pantryMealIdeas.length > 0 && <Text style={styles.pantryRecipeListHeading}>More meal ideas</Text>}
+                      <Pressable accessibilityRole="button" accessibilityLabel={`View ${meal.name}`} onPress={() => openMealDetail(meal, 'pantryMeals')} style={({ pressed }) => [styles.mealCard, pressed && styles.pressed]}>
+                        <View style={styles.mealEmojiWrap}><Text style={styles.mealEmoji}>{meal.emoji}</Text></View>
+                        <View style={styles.mealCardCopy}>
+                          <Text style={styles.mealTitle}>{meal.name}</Text>
+                          <Text style={styles.mealDetail}>{meal.detail}</Text>
+                          <Text style={styles.mealMeta}>{meal.time}  ·  {meal.tags.join('  ·  ')}</Text>
+                        </View>
+                        <Ionicons name="chevron-forward" size={18} color="#f26b4f" />
+                      </Pressable>
+                    </React.Fragment>
                   ))}
+                  {pantryMealOptions.length === 0 && <Text style={styles.emptyMeals}>Add ingredients to your kitchen to generate recipe ideas.</Text>}
                 </View>
               </>
             )}
@@ -1118,9 +1645,9 @@ function MealPreferencesScreen() {
               {plannerPage === 'methods'
                 ? 'You can change this any time.'
                 : plannerPage === 'mood'
-                  ? 'Choose one to see meal ideas.'
+                  ? 'Pick a mood or type what you want to make.'
                   : plannerPage === 'recommendations'
-                      ? 'Suggestions respect your saved food preferences.'
+                      ? 'Suggestions respect your saved food preferences and your request.'
                     : plannerPage === 'browse'
                       ? `${selectedMeals.length} selected`
                         : plannerPage === 'mealDetail'
@@ -1128,7 +1655,7 @@ function MealPreferencesScreen() {
                                 : plannerPage === 'calendar'
                           ? 'Drag meals between days to rearrange.'
                                         : plannerPage === 'pantryMeals'
-                                          ? `${pantryMealIdeas.length} meal ideas ready`
+                                                              ? `${pantryMealOptions.length} meal ideas ready`
                       : `${pantryPhotos.length} photo${pantryPhotos.length === 1 ? '' : 's'} · ${pantryIngredients.length} ingredient${pantryIngredients.length === 1 ? '' : 's'} added`}
             </Text>
             <Pressable
@@ -1136,24 +1663,33 @@ function MealPreferencesScreen() {
               disabled={
                 (plannerPage === 'browse' && selectedMeals.length === 0)
                 || (plannerPage === 'recommendations' && recommendedMeals.length === 0)
-                || (plannerPage === 'pantry' && pantryPhotos.length === 0 && pantryIngredients.length === 0)
+                || (plannerPage === 'pantry' && pantryIngredients.length === 0)
+                || (plannerPage === 'mood' && isGeneratingRecipe)
+                || (plannerPage === 'pantryMeals' && isGeneratingPantryMeals)
+                || (plannerPage === 'pantryMeals' && pantryMealOptions.length === 0)
               }
               onPress={() => {
                 if (plannerPage === 'methods') openPlanMethod();
-                else if (plannerPage === 'mood') setPlannerPage('recommendations');
-                else if (plannerPage === 'recommendations') startWeeklyCalendar(recommendedMeals.map((meal) => meal.name), 'recommendations');
+                else if (plannerPage === 'mood') {
+                  if (manualMealRequest.trim()) generateRecipeWithNutrition();
+                  else setPlannerPage('recommendations');
+                }
+                else if (plannerPage === 'recommendations') startWeeklyCalendar(visibleRecommendedMeals.map((meal) => meal.name), 'recommendations');
                 else if (plannerPage === 'browse') startWeeklyCalendar(selectedMeals, 'browse');
                 else if (plannerPage === 'mealDetail') addMealFromDetail();
-                else if (plannerPage === 'pantry') setPlannerPage('pantryMeals');
-                else if (plannerPage === 'pantryMeals') startWeeklyCalendar(pantryMealIdeas.map((meal) => meal.name), 'pantryMeals');
+                else if (plannerPage === 'pantry') findMealsWithPantryIngredients();
+                else if (plannerPage === 'pantryMeals') startWeeklyCalendar(pantryMealOptions.map((meal) => meal.name), 'pantryMeals');
                 else savePreferences();
               }}
               style={({ pressed }) => [
                 styles.plannerAction,
                 saved && styles.plannerActionSaved,
                 ((plannerPage === 'browse' && selectedMeals.length === 0)
-                  || (plannerPage === 'recommendations' && recommendedMeals.length === 0)
-                  || (plannerPage === 'pantry' && pantryPhotos.length === 0 && pantryIngredients.length === 0)) && styles.plannerActionDisabled,
+                  || (plannerPage === 'recommendations' && visibleRecommendedMeals.length === 0)
+                  || (plannerPage === 'pantry' && pantryIngredients.length === 0)
+                  || (plannerPage === 'mood' && isGeneratingRecipe)
+                  || (plannerPage === 'pantryMeals' && isGeneratingPantryMeals)
+                  || (plannerPage === 'pantryMeals' && pantryMealOptions.length === 0)) && styles.plannerActionDisabled,
                 pressed && styles.pressed,
               ]}
             >
@@ -1161,9 +1697,9 @@ function MealPreferencesScreen() {
                 {plannerPage === 'methods'
                   ? 'Build my plan'
                   : plannerPage === 'mood'
-                    ? 'Find meals'
+                    ? (isGeneratingRecipe ? 'Generating recipe...' : 'Find meals')
                     : plannerPage === 'recommendations'
-                      ? 'Add meals to my week'
+                      ? (normalizedManualRequest ? 'Add matching meals' : 'Add meals to my week')
                       : plannerPage === 'browse'
                         ? 'Place selected meals'
                         : plannerPage === 'mealDetail'
@@ -1171,7 +1707,7 @@ function MealPreferencesScreen() {
                             : plannerPage === 'calendar'
                           ? (saved ? 'Week saved' : 'Save weekly plan')
                               : plannerPage === 'pantryMeals'
-                                ? 'Plan these meals'
+                                ? (isGeneratingPantryMeals ? 'Generating recipes...' : 'Plan these meals')
                           : (saved ? 'Ingredients ready' : 'Find meals with these')}
               </Text>
               <Ionicons name={saved ? 'checkmark' : 'arrow-forward'} size={18} color="#24443a" />
@@ -1744,6 +2280,52 @@ const styles = StyleSheet.create({
   plannerBrandPeriod: {
     color: '#f06a52',
   },
+  homeTiles: {
+    marginTop: 20,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  homeTile: {
+    width: '48%',
+    minHeight: 130,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#dfe9d8',
+    borderRadius: 18,
+    backgroundColor: '#fffefa',
+  },
+  homeTileIcon: {
+    width: 46,
+    height: 46,
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 14,
+  },
+  homeTileIconGreen: {
+    backgroundColor: '#d9f0dd',
+  },
+  homeTileIconBlue: {
+    backgroundColor: '#dfeefc',
+  },
+  homeTileIconOrange: {
+    backgroundColor: '#ffe4d5',
+  },
+  homeTileIconPurple: {
+    backgroundColor: '#e7e2ff',
+  },
+  homeTileTitle: {
+    color: '#24324a',
+    fontSize: 15,
+    fontWeight: '800',
+  },
+  homeTileText: {
+    marginTop: 6,
+    color: '#667085',
+    fontSize: 11,
+    lineHeight: 17,
+  },
   profileReadyBadge: {
     minHeight: 29,
     paddingHorizontal: 10,
@@ -1919,6 +2501,66 @@ const styles = StyleSheet.create({
   destinationTitle: { marginTop: 7, color: '#24362d', fontFamily: Platform.select({ ios: 'Georgia', android: 'serif' }), fontSize: 28, lineHeight: 35, fontWeight: '700' },
   destinationSubtitle: { maxWidth: 520, marginTop: 6, color: '#68756b', fontSize: 12, lineHeight: 18 },
   moodGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  planPromptCard: {
+    marginBottom: 18,
+    padding: 14,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#cfe6d9',
+    backgroundColor: '#f5fbf6',
+  },
+  planPromptLabel: {
+    marginBottom: 8,
+    color: '#3a6d62',
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+  planPromptInput: {
+    borderWidth: 1,
+    borderColor: '#d7e9db',
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: colors.ink,
+  },
+  planPromptActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 10,
+  },
+  planPromptGenerateButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    backgroundColor: '#3b8e67',
+  },
+  planPromptGenerateText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  planPromptClearButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 10,
+    backgroundColor: '#edf7ee',
+  },
+  planPromptClearText: {
+    color: '#3a6d62',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  recipeGenerationError: {
+    marginTop: 9,
+    color: '#b34d43',
+    fontSize: 10,
+    lineHeight: 15,
+  },
   moodCard: { width: '48.5%', minHeight: 145, marginBottom: 10, padding: 13, borderWidth: 1, borderColor: '#d5ded1', borderRadius: 15, backgroundColor: '#fffefa' },
   moodCardSelected: { borderWidth: 2, borderColor: '#4d8b57', backgroundColor: '#f5faef' },
   moodEmojiWrap: { width: 43, height: 43, marginBottom: 11, alignItems: 'center', justifyContent: 'center', borderRadius: 14 },
@@ -1947,6 +2589,7 @@ const styles = StyleSheet.create({
   detailSectionHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   detailSectionTitle: { color: '#24324a', fontSize: 15, fontWeight: '800' },
   detailSectionCaption: { color: '#8a8f9a', fontSize: 10 },
+  nutritionWarning: { marginTop: 10, color: '#a75a26', fontSize: 10, lineHeight: 15 },
   macroGrid: { marginTop: 12, flexDirection: 'row', gap: 8 },
   macroStat: { flex: 1, minHeight: 67, padding: 10, borderRadius: 15 },
   macroStatProtein: { backgroundColor: '#d9f1df' },
@@ -1955,6 +2598,10 @@ const styles = StyleSheet.create({
   macroStatValue: { color: '#24324a', fontSize: 17, fontWeight: '800' },
   macroStatLabel: { marginTop: 3, color: '#667085', fontSize: 10, fontWeight: '700' },
   recipeSection: { marginTop: 14, padding: 15, borderRadius: 20, backgroundColor: '#fffefa' },
+  recipeIngredientSource: { marginTop: 10, padding: 10, borderRadius: 10, backgroundColor: '#e8f3e9' },
+  recipeExtraIngredients: { backgroundColor: '#fff0d0' },
+  recipeIngredientSourceTitle: { color: '#31564a', fontSize: 10, fontWeight: '800' },
+  recipeIngredientSourceText: { marginTop: 4, color: '#596b5d', fontSize: 10, lineHeight: 15 },
   ingredientList: { marginTop: 10, marginBottom: 22, gap: 8 },
   ingredientRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   ingredientText: { color: '#4b596b', fontSize: 12 },
@@ -2034,6 +2681,15 @@ const styles = StyleSheet.create({
   manualIngredientIconButton: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
   pantryIdeaSummary: { minHeight: 45, marginBottom: 12, paddingHorizontal: 13, flexDirection: 'row', alignItems: 'center', gap: 9, borderWidth: 1, borderColor: '#f2c3a4', borderRadius: 13, backgroundColor: '#fff0d0' },
   pantryIdeaSummaryText: { flex: 1, color: '#8c5945', fontSize: 11, fontWeight: '800' },
+  pantryRecipeTools: { marginBottom: 14, gap: 10 },
+  pantryGenerateButton: { minHeight: 44, paddingHorizontal: 13, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 11, backgroundColor: '#315b6f' },
+  pantryGenerateButtonText: { color: '#fff', fontSize: 11, fontWeight: '800' },
+  pantryCustomRecipe: { padding: 12, borderWidth: 1, borderColor: '#c4dce1', borderRadius: 13, backgroundColor: '#f2fbf7' },
+  pantryRecipeInputLabel: { marginBottom: 7, color: '#315b6f', fontSize: 10, fontWeight: '800' },
+  pantryRecipeInputRow: { minHeight: 42, paddingLeft: 10, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#b8d3d8', borderRadius: 10, backgroundColor: '#fffefa' },
+  pantryRecipeInput: { minWidth: 0, flex: 1, paddingVertical: 8, color: '#315b6f', fontSize: 12 },
+  pantryRecipeSubmit: { width: 36, height: 36, marginRight: 2, alignItems: 'center', justifyContent: 'center', borderRadius: 9, backgroundColor: '#4b8dcc' },
+  pantryRecipeListHeading: { marginTop: 4, marginBottom: 2, color: '#315b6f', fontSize: 11, fontWeight: '800' },
   fridgeDoor: { width: '27%', minWidth: 88, marginTop: 8, marginLeft: 11, padding: 11, alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#aeb8bb', borderRadius: 7, backgroundColor: '#f8faf9' },
   fridgeDoorHandle: { width: 8, height: 104, marginBottom: 11, borderRadius: 4, backgroundColor: '#aebabe' },
   fridgeDoorText: { color: '#7b898e', fontSize: 8, fontWeight: '800', textAlign: 'center' },
@@ -2055,6 +2711,22 @@ const styles = StyleSheet.create({
   photoThumbWrap: { width: 92, height: 92, borderRadius: 12, backgroundColor: '#dcebd4' },
   photoThumb: { width: '100%', height: '100%', borderRadius: 12 },
   photoRemove: { position: 'absolute', top: 5, right: 5, width: 24, height: 24, alignItems: 'center', justifyContent: 'center', borderRadius: 12, backgroundColor: 'rgba(36,68,58,0.85)' },
+  fridgeScanPanel: { marginTop: 12, marginBottom: 12, gap: 9 },
+  fridgeScanButton: { minHeight: 46, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 12, backgroundColor: '#315b6f' },
+  fridgeScanButtonText: { color: '#fff', fontSize: 11, fontWeight: '800' },
+  fridgeScanResults: { padding: 14, borderWidth: 1, borderColor: '#c4dce1', borderRadius: 16, backgroundColor: '#fffefa' },
+  fridgeScanTitle: { color: '#315b6f', fontSize: 13, fontWeight: '800' },
+  fridgeScanNote: { marginTop: 5, color: '#718b91', fontSize: 10, lineHeight: 15 },
+  fridgeScanTotals: { marginTop: 12, padding: 11, borderRadius: 11, backgroundColor: '#e7f3e9' },
+  fridgeScanCalories: { color: '#31564a', fontSize: 17, fontWeight: '800' },
+  fridgeScanMacros: { marginTop: 4, color: '#5d6d63', fontSize: 10, fontWeight: '700' },
+  fridgeScanSubheading: { marginTop: 13, color: '#315b6f', fontSize: 11, fontWeight: '800' },
+  fridgeScannedList: { marginTop: 5 },
+  fridgeScannedRow: { paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#e7ece5' },
+  fridgeNutritionRow: { paddingVertical: 7, borderBottomWidth: 1, borderBottomColor: '#e7ece5' },
+  fridgeScannedName: { color: '#31564a', fontSize: 11, fontWeight: '700' },
+  fridgeScannedMeta: { marginTop: 3, color: '#71866e', fontSize: 9 },
+  fridgeScannedEvidence: { marginTop: 3, color: '#77827a', fontSize: 9, lineHeight: 13 },
   plannerActionDisabled: { opacity: 0.45 },
   calendarSummary: {
     minHeight: 45,
@@ -2093,6 +2765,31 @@ const styles = StyleSheet.create({
   calendarDayIndex: { color: '#8a9386', fontSize: 9, fontWeight: '800' },
   calendarDayName: { color: '#273b32', fontSize: 12, fontWeight: '800' },
   calendarDayMealCount: { color: '#758171', fontSize: 9, fontWeight: '700' },
+  calendarDayNutrition: {
+    marginBottom: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#e4edd7',
+    borderRadius: 9,
+    backgroundColor: '#f9fbf6',
+  },
+  calendarDayNutritionValue: {
+    color: '#2d4b3d',
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  calendarDayNutritionBreakdown: {
+    marginTop: 4,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  calendarDayNutritionMicro: {
+    color: '#5d6d63',
+    fontSize: 9,
+    fontWeight: '700',
+  },
   calendarPlaceButton: { minHeight: 28, paddingHorizontal: 9, alignItems: 'center', justifyContent: 'center', borderRadius: 9, backgroundColor: '#dcebd4' },
   calendarPlaceButtonText: { color: '#31564a', fontSize: 9, fontWeight: '800' },
   calendarDropZone: {

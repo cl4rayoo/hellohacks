@@ -18,7 +18,9 @@
           "microphonePermission": false,
           "recordAudioAndroid": false
         }
-      ]
+      ],
+      "expo-status-bar",
+      "expo-font"
     ],
     "ios": {
       "supportsTablet": false,

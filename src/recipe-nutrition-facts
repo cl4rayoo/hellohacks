@@ -1,0 +1,173 @@
+import os
+import json
+import sys
+import requests
+from dotenv import load_dotenv
+from google import genai
+from google.genai import types
+
+load_dotenv()
+
+api_url = 'https://api.calorieninjas.com/v1/nutrition'
+nutrients = [
+    ('calories', 'Calories', 'kcal'),
+    ('protein_g', 'Protein', 'g'),
+    ('carbohydrates_total_g', 'Carbohydrates', 'g'),
+    ('fat_total_g', 'Total fat', 'g'),
+    ('fat_saturated_g', 'Saturated fat', 'g'),
+    ('fiber_g', 'Fiber', 'g'),
+    ('sugar_g', 'Sugar', 'g'),
+    ('sodium_mg', 'Sodium', 'mg'),
+    ('potassium_mg', 'Potassium', 'mg'),
+    ('cholesterol_mg', 'Cholesterol', 'mg'),
+]
+recipe_response_schema = {
+    'type': 'OBJECT',
+    'properties': {
+        'ingredients': {'type': 'ARRAY', 'items': {'type': 'STRING'}},
+        'instructions': {'type': 'ARRAY', 'items': {'type': 'STRING'}},
+    },
+    'required': ['ingredients', 'instructions'],
+}
+
+def number_or_zero(value):
+    return value if isinstance(value, (int, float)) else 0
+
+def create_recipe(prompt):
+    prompt = (prompt or '').strip()
+    if not prompt or len(prompt) > 200:
+        raise ValueError('Enter a recipe idea under 200 characters.')
+
+    gemini_api_key = os.getenv('GEMINI_API_KEY') or os.getenv('gemini_apikey')
+    calorie_ninjas_key = os.getenv('CALORIE_NINJAS_KEY')
+    if not gemini_api_key or not calorie_ninjas_key:
+        raise ValueError('Set GEMINI_API_KEY (or gemini_apikey) and CALORIE_NINJAS_KEY in .env.')
+
+    client = genai.Client(api_key=gemini_api_key)
+    gemini_response = client.models.generate_content(
+        model=os.getenv('GEMINI_MODEL', 'gemini-3.8-flash'),
+        contents=(
+            f'Create a practical {prompt} recipe for exactly 4 people. '
+            'Return all ingredients with quantities in grams, including liquids. '
+            'Return 5 to 8 detailed, sequential cooking steps that use those ingredients. '
+            'Include useful timings, heat levels or oven temperatures, and doneness cues where relevant. '
+            'For meat, include a safe internal temperature. Keep the steps specific to this recipe.'
+        ),
+        config=types.GenerateContentConfig(
+            temperature=0.3,
+            max_output_tokens=1800,
+            response_mime_type='application/json',
+            response_schema=recipe_response_schema,
+        ),
+    )
+    gemini_output = gemini_response.text
+    if not gemini_output or len(gemini_output) > 10000:
+        raise ValueError('Gemini returned an empty or oversized recipe.')
+    print('Gemini recipe ingredient output:', file=sys.stderr)
+    print(gemini_output, file=sys.stderr)
+
+    try:
+        gemini_recipe = json.loads(gemini_output)
+    except json.JSONDecodeError as error:
+        raise ValueError('Gemini returned invalid recipe JSON.') from error
+    ingredients = [item.strip() for item in gemini_recipe.get('ingredients', []) if isinstance(item, str) and item.strip()]
+    instructions = [step.strip() for step in gemini_recipe.get('instructions', []) if isinstance(step, str) and step.strip()]
+    if not ingredients:
+        raise ValueError('Gemini returned no ingredients.')
+    if not 4 <= len(instructions) <= 10:
+        raise ValueError('Gemini must return 4 to 10 detailed cooking steps.')
+    nutrition_query = ' and '.join(ingredients)
+    if len(nutrition_query) > 1500:
+        raise ValueError('The generated ingredient query exceeds CalorieNinjas’ 1500-character limit.')
+
+    response = requests.get(
+        api_url,
+        params={'query': nutrition_query},
+        headers={'X-Api-Key': calorie_ninjas_key},
+        timeout=30,
+    )
+    if response.status_code != requests.codes.ok:
+        raise RuntimeError(f'CalorieNinjas request failed ({response.status_code}): {response.text}')
+
+    items = response.json().get('items', [])
+    if not items:
+        raise ValueError('CalorieNinjas found no nutrition information for those ingredients.')
+    totals = {
+        key: sum(number_or_zero(item.get(key)) for item in items)
+        for key, _, _ in nutrients
+    }
+    recipe = {
+        'name': ' '.join(word.capitalize() for word in prompt.split()),
+        'detail': 'A recipe generated around what you want to cook.',
+        'emoji': '🍽️',
+        'time': '30 min',
+        'tags': ['Custom', 'Nutrition estimate'],
+        'moods': ['Quick & easy', 'Comforting'],
+        'vegetarian': True,
+        'vegan': False,
+        'glutenFree': False,
+        'lactoseFree': False,
+        'ingredients': ingredients,
+        'servings': 4,
+        'nutritionWarning': (
+            f'CalorieNinjas returned {len(items)} nutrition entries for {len(ingredients)} ingredients; check for missing or duplicate matches.'
+            if len(items) != len(ingredients) else None
+        ),
+        'calories': round(totals['calories'] / 4),
+        'macros': {
+            'protein': round(totals['protein_g'] / 4),
+            'carbs': round(totals['carbohydrates_total_g'] / 4),
+            'fat': round(totals['fat_total_g'] / 4),
+        },
+        'recipe': instructions,
+        'nutritionSource': 'Gemini + CalorieNinjas',
+    }
+    return recipe, items, totals
+
+
+def main():
+    json_mode = '--json' in sys.argv[1:]
+    try:
+        if json_mode:
+            request = json.load(sys.stdin)
+            prompt = request.get('prompt', '')
+        else:
+            prompt = ' '.join(argument for argument in sys.argv[1:] if argument != '--json').strip()
+            if not prompt:
+                prompt = input('What recipe would you like? ').strip()
+
+        recipe, items, totals = create_recipe(prompt)
+        if json_mode:
+            print(json.dumps(recipe, ensure_ascii=False))
+            return
+
+        print(f"{recipe['name']} nutrition facts")
+        print('Values are estimates for the full recipe, based on each ingredient quantity.\n')
+        print('Cooking instructions:')
+        for index, step in enumerate(recipe['recipe'], start=1):
+            print(f'{index}. {step}')
+        print()
+        if recipe['nutritionWarning']:
+            print(f"Warning: {recipe['nutritionWarning']}\n")
+        for item in items:
+            quantity = item.get('serving_size_g')
+            quantity_text = f'{quantity:g} g' if quantity is not None else 'quantity unavailable'
+            print(f"{item.get('name', 'Unknown ingredient').capitalize()} ({quantity_text})")
+            for key, label, unit in nutrients:
+                value = item.get(key)
+                value_text = f'{value:g} {unit}' if value is not None else 'unavailable'
+                print(f'  {label}: {value_text}')
+            print()
+        print('Estimated total for the full recipe:')
+        for key, label, unit in nutrients:
+            print(f'  {label}: {totals[key]:g} {unit}')
+        print(f"Estimated calories per serving (assumes 4 servings): {recipe['calories']} kcal")
+    except Exception as error:
+        if json_mode:
+            print(json.dumps({'error': str(error)}))
+            sys.exit(1)
+        raise
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,393 @@
+import base64
+import json
+import os
+import sys
+from pathlib import Path
+from typing import Literal
+
+import requests
+from dotenv import load_dotenv
+from google import genai
+from google.genai import types
+from pydantic import BaseModel, Field
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
+
+MAX_IMAGE_BYTES = 10 * 1024 * 1024
+MAX_IMAGES = 4
+SUPPORTED_IMAGE_TYPES = {'image/jpeg', 'image/png', 'image/webp'}
+NUTRIENT_FIELDS = {
+	'calories': 'calories',
+	'protein': 'protein_g',
+	'carbs': 'carbohydrates_total_g',
+	'fat': 'fat_total_g',
+	'saturatedFat': 'fat_saturated_g',
+	'fiber': 'fiber_g',
+	'sugar': 'sugar_g',
+	'sodium': 'sodium_mg',
+	'potassium': 'potassium_mg',
+	'cholesterol': 'cholesterol_mg',
+}
+
+
+class DetectedIngredient(BaseModel):
+	name: str = Field(min_length=1, max_length=100)
+	quantity_g: float = Field(ge=0, le=10000)
+	confidence: Literal['high', 'medium', 'low']
+	evidence: str = Field(max_length=240)
+
+
+class GeminiFridgeScan(BaseModel):
+	detected_ingredients: list[DetectedIngredient]
+	note: str
+
+
+class GeneratedPantryRecipe(BaseModel):
+	name: str = Field(min_length=1, max_length=100)
+	description: str = Field(min_length=1, max_length=240)
+	emoji: str = Field(min_length=1, max_length=8)
+	time_minutes: int = Field(ge=1, le=240)
+	ingredients: list[str]
+	instructions: list[str]
+	vegetarian: bool
+	vegan: bool
+	gluten_free: bool
+	lactose_free: bool
+	pantry_ingredients_used: list[str]
+	extra_ingredients: list[str]
+
+
+class GeminiPantryRecipes(BaseModel):
+	recipes: list[GeneratedPantryRecipe]
+
+
+GEMINI_FRIDGE_SCHEMA = {
+	'type': 'OBJECT',
+	'properties': {
+		'detected_ingredients': {
+			'type': 'ARRAY',
+			'items': {
+				'type': 'OBJECT',
+				'properties': {
+					'name': {'type': 'STRING'},
+					'quantity_g': {'type': 'NUMBER'},
+					'confidence': {'type': 'STRING', 'enum': ['high', 'medium', 'low']},
+					'evidence': {'type': 'STRING'},
+				},
+				'required': ['name', 'quantity_g', 'confidence', 'evidence'],
+			},
+		},
+		'note': {'type': 'STRING'},
+	},
+	'required': ['detected_ingredients', 'note'],
+}
+
+GEMINI_PANTRY_RECIPE_SCHEMA = {
+	'type': 'OBJECT',
+	'properties': {
+		'recipes': {
+			'type': 'ARRAY',
+			'items': {
+				'type': 'OBJECT',
+				'properties': {
+					'name': {'type': 'STRING'},
+					'description': {'type': 'STRING'},
+					'emoji': {'type': 'STRING'},
+					'time_minutes': {'type': 'INTEGER'},
+					'ingredients': {'type': 'ARRAY', 'items': {'type': 'STRING'}},
+					'instructions': {'type': 'ARRAY', 'items': {'type': 'STRING'}},
+					'vegetarian': {'type': 'BOOLEAN'},
+					'vegan': {'type': 'BOOLEAN'},
+					'gluten_free': {'type': 'BOOLEAN'},
+					'lactose_free': {'type': 'BOOLEAN'},
+					'pantry_ingredients_used': {'type': 'ARRAY', 'items': {'type': 'STRING'}},
+					'extra_ingredients': {'type': 'ARRAY', 'items': {'type': 'STRING'}},
+				},
+				'required': [
+					'name', 'description', 'emoji', 'time_minutes', 'ingredients',
+					'instructions', 'vegetarian', 'vegan', 'gluten_free',
+					'lactose_free', 'pantry_ingredients_used', 'extra_ingredients',
+				],
+			},
+		},
+	},
+	'required': ['recipes'],
+}
+
+
+def number_or_zero(value):
+	return value if isinstance(value, (int, float)) else 0
+
+
+def parse_images(images):
+	if not isinstance(images, list) or not 1 <= len(images) <= MAX_IMAGES:
+		raise ValueError(f'Provide between 1 and {MAX_IMAGES} fridge photos.')
+
+	image_parts = []
+	for image in images:
+		if not isinstance(image, dict):
+			raise ValueError('Each photo must include base64 data and a MIME type.')
+		mime_type = image.get('mimeType')
+		encoded_image = image.get('base64')
+		if mime_type not in SUPPORTED_IMAGE_TYPES or not isinstance(encoded_image, str):
+			raise ValueError('Use JPEG, PNG, or WebP photos with image data.')
+		if encoded_image.startswith('data:'):
+			encoded_image = encoded_image.split(',', 1)[-1]
+		try:
+			image_bytes = base64.b64decode(encoded_image, validate=True)
+		except (ValueError, base64.binascii.Error) as error:
+			raise ValueError('A fridge photo could not be decoded.') from error
+		if not image_bytes or len(image_bytes) > MAX_IMAGE_BYTES:
+			raise ValueError('Each fridge photo must be smaller than 10 MB.')
+		image_parts.append(types.Part.from_bytes(data=image_bytes, mime_type=mime_type))
+	return image_parts
+
+
+def analyze_fridge(request):
+	image_parts = parse_images(request.get('images'))
+	gemini_api_key = os.getenv('GEMINI_API_KEY') or os.getenv('gemini_apikey')
+	calorie_ninjas_key = os.getenv('CALORIE_NINJAS_KEY')
+	if not gemini_api_key or not calorie_ninjas_key:
+		raise ValueError('Set GEMINI_API_KEY (or gemini_apikey) and CALORIE_NINJAS_KEY in .env.')
+
+	client = genai.Client(api_key=gemini_api_key)
+	response = client.models.generate_content(
+		model=os.getenv('GEMINI_MODEL', 'gemini-3.8-flash'),
+		contents=[
+			*image_parts,
+			(
+				'Identify distinct edible ingredients that are clearly visible in these fridge or pantry photos. '
+				'Do not infer foods hidden in drawers, opaque containers, or outside the frame. '
+				'Merge duplicate views of the same food across photos. Estimate the visible edible amount '
+				'in grams; mark confidence low when the amount or identity is uncertain. Include brief visual '
+				'evidence for each item. Return no more than 40 ingredients and follow the response schema.'
+			),
+		],
+		config=types.GenerateContentConfig(
+			temperature=0,
+			response_mime_type='application/json',
+			response_schema=GEMINI_FRIDGE_SCHEMA,
+		),
+	)
+	if not response.text:
+		raise ValueError('Gemini returned an empty fridge scan.')
+	print('Gemini fridge scan output:', file=sys.stderr)
+	print(response.text, file=sys.stderr)
+	analysis = GeminiFridgeScan.model_validate_json(response.text)
+	if len(analysis.detected_ingredients) > 40:
+		raise ValueError('Gemini returned too many ingredients.')
+	if any(item.quantity_g <= 0 for item in analysis.detected_ingredients):
+		raise ValueError('Gemini returned an ingredient without a positive estimated quantity.')
+
+	detected_ingredients = [
+		{
+			'name': item.name,
+			'quantityGrams': item.quantity_g,
+			'confidence': item.confidence,
+			'evidence': item.evidence,
+		}
+		for item in analysis.detected_ingredients
+	]
+	empty_totals = {field: 0 for field in NUTRIENT_FIELDS}
+	if not detected_ingredients:
+		return {
+			'detectedIngredients': [],
+			'nutritionItems': [],
+			'nutritionTotal': empty_totals,
+			'nutritionWarning': None,
+			'note': analysis.note or 'No clear ingredients were identified. Try a brighter, closer photo.',
+		}
+
+	nutrition_query = ' and '.join(
+		f"{item['quantityGrams']:g} g {item['name']}" for item in detected_ingredients
+	)
+	if len(nutrition_query) > 1500:
+		raise ValueError('The detected ingredient query exceeds CalorieNinjas’ 1500-character limit.')
+
+	nutrition_response = requests.get(
+		'https://api.calorieninjas.com/v1/nutrition',
+		params={'query': nutrition_query},
+		headers={'X-Api-Key': calorie_ninjas_key},
+		timeout=30,
+	)
+	if nutrition_response.status_code != requests.codes.ok:
+		raise RuntimeError(f'CalorieNinjas request failed ({nutrition_response.status_code}).')
+
+	raw_items = nutrition_response.json().get('items', [])
+	nutrition_items = [
+		{
+			'name': item.get('name', 'Unknown ingredient'),
+			'servingSizeGrams': number_or_zero(item.get('serving_size_g')),
+			**{
+				field: number_or_zero(item.get(api_field))
+				for field, api_field in NUTRIENT_FIELDS.items()
+			},
+		}
+		for item in raw_items
+	]
+	nutrition_total = {
+		field: sum(item[field] for item in nutrition_items)
+		for field in NUTRIENT_FIELDS
+	}
+	nutrition_warning = None
+	if not nutrition_items:
+		nutrition_warning = 'CalorieNinjas did not return nutrition data for the detected ingredients.'
+	elif len(nutrition_items) != len(detected_ingredients):
+		nutrition_warning = (
+			f'CalorieNinjas returned {len(nutrition_items)} nutrition entries for '
+			f'{len(detected_ingredients)} detected ingredients; check for missing or duplicate matches.'
+		)
+
+	return {
+		'detectedIngredients': detected_ingredients,
+		'nutritionItems': nutrition_items,
+		'nutritionTotal': nutrition_total,
+		'nutritionWarning': nutrition_warning,
+		'note': analysis.note or 'Amounts are visual estimates for foods visible in the photos.',
+	}
+
+
+def generate_pantry_recipes(request):
+	ingredient_context = request.get('ingredients')
+	if not isinstance(ingredient_context, list) or not ingredient_context:
+		raise ValueError('Scan or add ingredients before generating recipes.')
+	if len(ingredient_context) > 40:
+		raise ValueError('Use no more than 40 ingredients at a time.')
+
+	available_ingredients = []
+	for ingredient in ingredient_context:
+		if not isinstance(ingredient, dict):
+			continue
+		name = ingredient.get('name')
+		if not isinstance(name, str) or not name.strip() or len(name) > 100:
+			continue
+		available_ingredients.append({
+			'name': name.strip(),
+			'quantityGrams': ingredient.get('quantityGrams'),
+			'confidence': ingredient.get('confidence', 'unknown'),
+			'source': ingredient.get('source', 'user-added'),
+		})
+	if not available_ingredients:
+		raise ValueError('No usable ingredient names were provided.')
+
+	prompt = request.get('prompt', '')
+	if not isinstance(prompt, str) or len(prompt.strip()) > 200:
+		raise ValueError('Recipe idea must be 200 characters or fewer.')
+	prompt = prompt.strip()
+
+	gemini_api_key = os.getenv('GEMINI_API_KEY') or os.getenv('gemini_apikey')
+	calorie_ninjas_key = os.getenv('CALORIE_NINJAS_KEY')
+	if not gemini_api_key or not calorie_ninjas_key:
+		raise ValueError('Set GEMINI_API_KEY (or gemini_apikey) and CALORIE_NINJAS_KEY in .env.')
+
+	count = 1 if prompt else 3
+	user_recipe = f'The user specifically wants to make: {prompt}. ' if prompt else ''
+	client = genai.Client(api_key=gemini_api_key)
+	response = client.models.generate_content(
+		model=os.getenv('GEMINI_MODEL', 'gemini-3.8-flash'),
+		contents=(
+			f'Create exactly {count} practical recipe option(s) for 4 servings. '
+			f'{user_recipe}'
+			f'Foods available from the fridge scan (with visual estimate and confidence): {json.dumps(available_ingredients)}. '
+			'Prioritize ingredients marked high or medium confidence and use as many available foods as make sense. '
+			'Do not claim an ingredient is available when it was not listed. You may use common pantry staples, '
+			'Return pantry_ingredients_used as the exact names from the available list that this recipe actually uses. '
+			'Put every ingredient not in the available list in extra_ingredients. Include all ingredients '
+			'with gram quantities in the ingredient list. Return 4 to 8 specific sequential cooking instructions '
+			'with timings, temperatures, and doneness cues where relevant. Return distinct ideas when more than one '
+			'recipe is requested. Follow the response schema.'
+		),
+		config=types.GenerateContentConfig(
+			temperature=0.3,
+			response_mime_type='application/json',
+			response_schema=GEMINI_PANTRY_RECIPE_SCHEMA,
+		),
+	)
+	if not response.text:
+		raise ValueError('Gemini returned no pantry recipes.')
+	print('Gemini pantry recipe output:', file=sys.stderr)
+	print(response.text, file=sys.stderr)
+	generated = GeminiPantryRecipes.model_validate_json(response.text)
+	if len(generated.recipes) != count:
+		raise ValueError(f'Gemini returned {len(generated.recipes)} recipes; expected {count}.')
+
+	results = []
+	available_by_name = {item['name'].casefold(): item for item in available_ingredients}
+	for recipe in generated.recipes:
+		if not recipe.ingredients or not 4 <= len(recipe.instructions) <= 10:
+			raise ValueError('Gemini returned a recipe without ingredients or detailed instructions.')
+		nutrition_query = ' and '.join(recipe.ingredients)
+		if len(nutrition_query) > 1500:
+			raise ValueError('A generated recipe exceeds CalorieNinjas’ 1500-character limit.')
+		nutrition_response = requests.get(
+			'https://api.calorieninjas.com/v1/nutrition',
+			params={'query': nutrition_query},
+			headers={'X-Api-Key': calorie_ninjas_key},
+			timeout=30,
+		)
+		if nutrition_response.status_code != requests.codes.ok:
+			raise RuntimeError(f"CalorieNinjas request failed ({nutrition_response.status_code}).")
+		nutrition_items = nutrition_response.json().get('items', [])
+		totals = {
+			field: sum(number_or_zero(item.get(api_field)) for item in nutrition_items)
+			for field, api_field in NUTRIENT_FIELDS.items()
+		}
+		pantry_used = [
+			available_by_name[name.casefold()]
+			for name in recipe.pantry_ingredients_used
+			if name.casefold() in available_by_name
+		]
+		fridge_used = [item['name'] for item in pantry_used if item['source'] == 'photo']
+		manual_used = [item['name'] for item in pantry_used if item['source'] != 'photo']
+		tags = ([f'{len(fridge_used)} from fridge'] if fridge_used else ['Kitchen recipe'])
+		if recipe.extra_ingredients:
+			tags.append(f'{len(recipe.extra_ingredients)} to get')
+		tags.append('Nutrition estimate')
+		results.append({
+			'name': recipe.name,
+			'detail': recipe.description,
+			'emoji': recipe.emoji,
+			'time': f'{recipe.time_minutes} min',
+			'tags': tags,
+			'moods': ['Quick & easy', 'Comforting'],
+			'vegetarian': recipe.vegetarian,
+			'vegan': recipe.vegan,
+			'glutenFree': recipe.gluten_free,
+			'lactoseFree': recipe.lactose_free,
+			'pantryIngredientsUsed': [item['name'] for item in pantry_used],
+			'fridgeIngredientsUsed': fridge_used,
+			'manualIngredientsUsed': manual_used,
+			'ingredients': recipe.ingredients,
+			'servings': 4,
+			'nutritionWarning': (
+				f'CalorieNinjas returned {len(nutrition_items)} nutrition entries for '
+				f'{len(recipe.ingredients)} ingredients; check for missing or duplicate matches.'
+				if len(nutrition_items) != len(recipe.ingredients) else None
+			),
+			'calories': round(totals['calories'] / 4),
+			'macros': {
+				'protein': round(totals['protein'] / 4),
+				'carbs': round(totals['carbs'] / 4),
+				'fat': round(totals['fat'] / 4),
+			},
+			'recipe': recipe.instructions,
+			'nutritionSource': 'Gemini + CalorieNinjas',
+			'extraIngredients': recipe.extra_ingredients,
+		})
+	return {'recipes': results}
+
+
+def main():
+	try:
+		request = json.load(sys.stdin)
+		result = generate_pantry_recipes(request) if request.get('action') == 'recipes' else analyze_fridge(request)
+		print(json.dumps(result, ensure_ascii=False))
+	except Exception as error:
+		print(json.dumps({'error': str(error)}))
+		sys.exit(1)
+
+
+if __name__ == '__main__':
+	main()
