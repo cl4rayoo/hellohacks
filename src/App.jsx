@@ -384,6 +384,7 @@ function MealPreferencesScreen() {
   const [allergies, setAllergies] = useState([]);
   const [dislikes, setDislikes] = useState([]);
   const [selectedGoals, setSelectedGoals] = useState(['Save time']);
+  const [trackMacros, setTrackMacros] = useState(null);
   const [weeklyHoursSaved, setWeeklyHoursSaved] = useState(3);
   const [healthFocus, setHealthFocus] = useState([]);
   const [weeklyBudget, setWeeklyBudget] = useState(100);
@@ -1980,6 +1981,38 @@ function MealPreferencesScreen() {
                     );
                   })}
                 </View>
+                <View style={styles.macroTrackingQuestion}>
+                  <Text style={styles.detailPrompt}>Would you like to track macros?</Text>
+                  <Text style={styles.macroTrackingDescription}>You can set optional calorie and macro targets on the next pages.</Text>
+                  <View style={styles.macroTrackingOptions}>
+                    {[
+                      { value: true, label: 'Yes, track my macros', detail: 'Set up personal nutrition targets' },
+                      { value: false, label: 'No, skip macro tracking', detail: 'Create my profile and start planning' },
+                    ].map(({ value, label, detail }) => {
+                      const selected = trackMacros === value;
+                      return (
+                        <Pressable
+                          accessibilityRole="radio"
+                          accessibilityState={{ selected }}
+                          key={label}
+                          onPress={() => {
+                            setTrackMacros(value);
+                            setSaved(false);
+                          }}
+                          style={({ pressed }) => [styles.macroTrackingOption, selected && styles.macroTrackingOptionSelected, pressed && styles.pressed]}
+                        >
+                          <View style={styles.macroTrackingCopy}>
+                            <Text style={[styles.macroTrackingTitle, selected && styles.macroTrackingTitleSelected]}>{label}</Text>
+                            <Text style={styles.macroTrackingDetail}>{detail}</Text>
+                          </View>
+                          <View style={[styles.radioMark, selected && styles.radioMarkSelected]}>
+                            {selected && <View style={styles.radioDot} />}
+                          </View>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </View>
               </View>
             )}
 
@@ -2213,14 +2246,18 @@ function MealPreferencesScreen() {
             )}
             <Pressable
               accessibilityRole="button"
+              disabled={step === 3 && trackMacros === null}
               onPress={() => {
-                if (step === questionTitles.length - 1) createProfile();
+                if (step === 3) {
+                  if (trackMacros) changeStep(step + 1);
+                  else createProfile();
+                } else if (step === questionTitles.length - 1) createProfile();
                 else changeStep(step + 1);
               }}
-              style={({ pressed }) => [styles.continueButton, pressed && styles.continueButtonPressed]}
+              style={({ pressed }) => [styles.continueButton, step === 3 && trackMacros === null && styles.continueButtonDisabled, pressed && styles.continueButtonPressed]}
             >
               <Text style={styles.continueButtonText}>
-                {step === questionTitles.length - 1 ? 'Create profile' : 'Continue'}
+                {step === 3 && trackMacros === false || step === questionTitles.length - 1 ? 'Create profile' : 'Continue'}
               </Text>
               <Ionicons name="arrow-forward" size={18} color="#fff" />
             </Pressable>
@@ -3222,6 +3259,55 @@ const styles = StyleSheet.create({
   goalOptions: {
     flexDirection: 'column',
   },
+  macroTrackingQuestion: {
+    marginTop: 18,
+    paddingTop: 16,
+    borderTopWidth: 2,
+    borderTopColor: '#f0e4c2',
+  },
+  macroTrackingDescription: {
+    marginTop: -4,
+    marginBottom: 10,
+    color: colors.muted,
+    fontSize: 10,
+    lineHeight: 15,
+  },
+  macroTrackingOptions: {
+    gap: 8,
+  },
+  macroTrackingOption: {
+    minHeight: 58,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#e8dfc4',
+    borderRadius: 15,
+    backgroundColor: '#fffefa',
+  },
+  macroTrackingOptionSelected: {
+    borderColor: colors.green,
+    backgroundColor: '#edf7df',
+  },
+  macroTrackingCopy: {
+    flex: 1,
+    marginRight: 10,
+  },
+  macroTrackingTitle: {
+    color: colors.ink,
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  macroTrackingTitleSelected: {
+    color: colors.greenDark,
+  },
+  macroTrackingDetail: {
+    marginTop: 3,
+    color: colors.muted,
+    fontSize: 9,
+    lineHeight: 13,
+  },
   goalItem: {
     marginBottom: 9,
   },
@@ -3695,6 +3781,9 @@ const styles = StyleSheet.create({
   },
   continueButtonPressed: {
     backgroundColor: colors.greenDark,
+  },
+  continueButtonDisabled: {
+    opacity: 0.45,
   },
   continueButtonText: {
     marginRight: 15,
